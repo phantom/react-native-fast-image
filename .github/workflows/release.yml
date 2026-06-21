@@ -1,12 +1,11 @@
 name: Release
 
-# Publishes @phantom/react-native-fast-image to public npm. The @phantom scope is
-# public on npmjs.org (the wallet's Artifactory registry proxies it), so this mirrors
-# the publish setup used by phantom/react-native-webview, just triggered by a release
-# rather than changesets since this fork is bumped infrequently.
+# Publishes @phantom/react-native-fast-image to public npm via npm Trusted Publishing
+# (keyless OIDC). Security enabled the Trusted Publisher for this repo + this workflow
+# file, so there is no NPM token to manage. Requires `id-token: write` and npm >= 11.5.1.
 #
 # To cut a release: bump "version" in package.json on main, then publish a GitHub
-# Release tagged v<version> (e.g. v8.6.6). This workflow publishes that version.
+# Release tagged v<version> (e.g. v8.6.6), or run this workflow manually.
 
 on:
   release:
@@ -15,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   publish:
@@ -26,8 +26,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          registry-url: "https://registry.npmjs.org"
-          scope: "@phantom"
+
+      # Trusted Publishing (OIDC) requires npm >= 11.5.1; Node 20 ships npm 10.x.
+      - name: Upgrade npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -35,7 +37,6 @@ jobs:
       - name: Build
         run: yarn build
 
+      # No NODE_AUTH_TOKEN: npm exchanges the GitHub OIDC token via the Trusted Publisher.
       - name: Publish
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN_PHANTOM_SECURITY_BOT }}
