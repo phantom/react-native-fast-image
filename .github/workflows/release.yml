@@ -37,6 +37,15 @@ jobs:
       - name: Build
         run: yarn build
 
+      # `dv-scripts build` resets package.json repository metadata to the upstream
+      # (DylanVann) repo, which fails Trusted Publishing provenance validation
+      # (provenance expects this repo). Re-assert it on the built package.json.
+      - name: Restore repository metadata for provenance
+        run: |
+          npm pkg set repository.type=git
+          npm pkg set repository.url=git+https://github.com/phantom/react-native-fast-image.git
+          npm pkg set homepage=https://github.com/phantom/react-native-fast-image#readme
+
       # No NODE_AUTH_TOKEN: npm exchanges the GitHub OIDC token via the Trusted Publisher.
       - name: Publish
         run: npm publish --access public
