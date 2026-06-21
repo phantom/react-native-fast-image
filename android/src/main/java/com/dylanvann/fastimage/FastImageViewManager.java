@@ -83,6 +83,13 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
         view.setScaleType(scaleType);
     }
 
+    @ReactProp(name = "maxBufferSize")
+    public void setMaxBufferSize(FastImageViewWithUrl view, int maxBufferSize) {
+        // iOS-only (SDWebImage frame buffer). Glide decodes animated frames on
+        // demand with its own bitmap pool, so there is no equivalent buffer to
+        // cap. Accepted as a no-op so the cross-platform prop stays clean.
+    }
+
     @Override
     public void onDropViewInstance(@NonNull FastImageViewWithUrl view) {
         // This will cancel existing requests.
