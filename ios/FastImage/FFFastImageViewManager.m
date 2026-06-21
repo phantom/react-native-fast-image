@@ -22,6 +22,10 @@ RCT_EXPORT_VIEW_PROPERTY(onFastImageError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onFastImageLoad, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onFastImageLoadEnd, RCTDirectEventBlock)
 RCT_REMAP_VIEW_PROPERTY(tintColor, imageColor, UIColor)
+// Bridges the inherited SDAnimatedImageView.maxBufferSize. 0 (default) keeps
+// SDWebImage's automatic frame-buffer sizing; a small value caps per-view
+// animated-image memory. See FastImageProps.maxBufferSize.
+RCT_EXPORT_VIEW_PROPERTY(maxBufferSize, NSUInteger)
 
 RCT_EXPORT_METHOD(preload:(nonnull NSArray<FFFastImageSource *> *)sources)
 {

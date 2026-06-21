@@ -210,6 +210,14 @@ In this case the image will still be styled and laid out the same way as `FastIm
 
 If supplied, changes the color of all the non-transparent pixels to the given color.
 
+---
+
+### `maxBufferSize?: number`
+
+**iOS only.** Maximum byte size of the decoded animated-image frame buffer (maps to SDWebImage's `SDAnimatedImageView.maxBufferSize`).
+
+`0` (the default) preserves SDWebImage's automatic behavior, which buffers as many decoded frames as memory allows. Set a small value (for example a few MB) to bound per-view memory when many animations are visible at once, trading some on-demand frame decoding for a constant memory ceiling. No-op on Android (Glide decodes animated frames on demand and has no equivalent buffer).
+
 ## Static Methods
 
 ### `FastImage.preload: (source[]) => void`

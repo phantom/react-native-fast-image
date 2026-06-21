@@ -86,6 +86,20 @@ export interface FastImageProps extends AccessibilityProps, ViewProps {
     resizeMode?: ResizeMode
     fallback?: boolean
 
+    /**
+     * iOS only. Maximum byte size of the decoded animated-image frame buffer
+     * (maps to SDWebImage's `SDAnimatedImageView.maxBufferSize`).
+     *
+     * `0` (the default) preserves SDWebImage's automatic behavior, which buffers
+     * as many decoded frames as available memory allows. Set a small value (e.g.
+     * a few MB) to bound per-view memory when many animations are on screen at
+     * once, trading some on-demand frame decoding for a constant memory ceiling.
+     *
+     * No-op on Android (Glide decodes animated frames on demand and has no
+     * equivalent frame buffer).
+     */
+    maxBufferSize?: number
+
     onLoadStart?(): void
 
     onProgress?(event: OnProgressEvent): void
@@ -164,6 +178,7 @@ function FastImageBase({
     onLoadEnd,
     style,
     fallback,
+    maxBufferSize,
     children,
     // eslint-disable-next-line no-shadow
     resizeMode = 'cover',
@@ -211,6 +226,7 @@ function FastImageBase({
                 onFastImageError={onError}
                 onFastImageLoadEnd={onLoadEnd}
                 resizeMode={resizeMode}
+                maxBufferSize={maxBufferSize}
             />
             {children}
         </View>
